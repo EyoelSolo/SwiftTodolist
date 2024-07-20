@@ -1,0 +1,68 @@
+if (isset($_POST['search'])) {
+    $searchTerm = $_POST['search'];
+    $tasks = retreiveTasks('');
+
+    // Display filtered tasks
+    $foundTasks = false; // Variable to track if any tasks were found
+
+    foreach ($tasks as $filteredTask) {
+        $name = $filteredTask[0];
+        if (strpos($name, $searchTerm) === false) {
+            continue;
+        }
+
+        $foundTasks = true; // At least one task was found
+
+        $description = $filteredTask[1];
+        $dueDate = $filteredTask[2];
+        $priority = $filteredTask[3];
+        $task_id = $filteredTask[4];
+
+        echo '<h1 class="text-center">Task List</h1>';
+        echo '<div class="task-item">';
+        echo '<form id="myForm" method="post" action="delete_task.php">';
+        echo '<div class="form-check">';
+        echo '<input type="hidden" id="description" name="taskId" value="' . $task_id . '">';
+        echo '<input type="checkbox" onChange="document.getElementById(\'myForm\').submit()" class="form-check-input" id="taskCheckbox">';
+        echo '<label class="form-check-label" for="taskCheckbox">Mark Task Done</label>';
+        echo '</div>';
+        echo '</form>';
+        echo '<table class="table task-details">';
+        echo '<tr>';
+        echo '<th>Task Name</th>';
+        echo '<td>' . $name . '</td>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<th>Task Description</th>';
+        echo '<td>' . $description . '</td>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<th>Due Date</th>';
+        echo '<td>' . $dueDate . '</td>';
+        echo '</tr>';
+        echo '<tr>';
+        echo '<th>Priority</th>';
+        echo '<td><span class="task-priority high">' . $priority . '</span></td>';
+        echo '</tr>';
+        echo '</table>';
+        echo '</div>';
+        echo '<div class="task-actions">';
+        echo '<button class="btn btn-primary edit-btn">Edit</button>';
+        echo '<form action="deleteATask.php" method="post">';
+        echo '<input type="hidden" id="description" name="taskId" value="' . $task_id . '">';
+        echo '<button type="submit" class="btn btn-danger delete-btn">Delete</button>';
+        echo '</form>';
+        echo '</div>';
+        echo '</div>';
+        
+    }
+
+    // If no tasks were found, display a message
+    if (!$foundTasks) {
+        echo '<h1 class="text-center">No tasks found.</h1>';
+        
+    }
+    
+}
+ob_implicit_flush(true);
+ob_end_flush();
